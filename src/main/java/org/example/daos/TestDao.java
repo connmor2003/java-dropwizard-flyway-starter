@@ -1,7 +1,5 @@
 package org.example.daos;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
