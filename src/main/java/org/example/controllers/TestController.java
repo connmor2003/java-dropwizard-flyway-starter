@@ -21,7 +21,8 @@ public class TestController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response testConnection() {
         try {
-            return Response.ok().entity(testService.testConnection()).build();
+            return Response.ok()
+                    .entity(testService.testConnection()).build();
         } catch (SQLException e) {
             return Response.serverError().build();
         }

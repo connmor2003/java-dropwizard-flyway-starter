@@ -33,7 +33,8 @@ public class KainosJobWebApplication extends
     public void run(final KainosJobWebConfiguration configuration,
                     final Environment environment) {
         environment.jersey()
-                .register(new JobRoleController(
+                .register(
+                        new JobRoleController(
                         new JobRoleService(new JobRoleDao())));
     }
 

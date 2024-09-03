@@ -26,7 +26,8 @@ public final class DatabaseConnector {
                         + "DB_USERNAME, DB_PASSWORD, DB_HOST and DB_NAME");
             }
             conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + host + "/" + name, username, password);
+                    "jdbc:mysql://" + host + "/"
+                            + name, username, password);
             return conn;
 
         } catch (Exception e) {
