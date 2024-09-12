@@ -1,5 +1,7 @@
 package org.example.services;
 import org.example.daos.JobRoleDao;
+import org.example.enums.Direction;
+import org.example.enums.JobRoleColumn;
 import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.Entity;
 import org.example.exceptions.InvalidException;
@@ -17,11 +19,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class JobRoleServiceTest {
@@ -49,9 +53,9 @@ public class JobRoleServiceTest {
         List<JobRoleResponse> expectedResponse = new ArrayList<>();
         expectedResponse.add(jobRoleResponse);
 
-        Mockito.when(jobRoleDao.getOpenJobRoles()).thenReturn(jobRoles);
+        when(jobRoleDao.getOpenJobRoles(null, null)).thenReturn(jobRoles);
 
-        List<JobRoleResponse> actualResponse = jobRoleService.getOpenJobRoles();
+        List<JobRoleResponse> actualResponse = jobRoleService.getOpenJobRoles(null, null);
 
         Assert.assertEquals(expectedResponse.size(), actualResponse.size());
         Assert.assertEquals(1, actualResponse.size());
@@ -80,10 +84,10 @@ public class JobRoleServiceTest {
     @Test
     public void getAllJobRoles_shouldThrowSqlException_whenDaoThrowsSqlException() throws SQLException{
 
-        Mockito.when(jobRoleDao.getOpenJobRoles()).thenThrow(SQLException.class);
+        when(jobRoleDao.getOpenJobRoles(null, null)).thenThrow(SQLException.class);
 
         assertThrows(SQLException.class,
-                () -> jobRoleService.getOpenJobRoles());
+                () -> jobRoleService.getOpenJobRoles(null, null));
 
     }
 
@@ -96,7 +100,7 @@ public class JobRoleServiceTest {
         int jobRoleId = 1;
         JobRole expectedJobRole = new JobRole(1,"Software Engineer", "Develops, tests, and maintains software applications.", "Design, develop, and maintain software applications.", "https://sharepoint.com/job/software-engineer", "New York", "Software Development", "Senior", closingDate, "Open", 1);
 
-        Mockito.when(jobRoleDao.getJobRoleById(jobRoleId)).thenReturn(expectedJobRole);
+        when(jobRoleDao.getJobRoleById(jobRoleId)).thenReturn(expectedJobRole);
 
 
         JobRoleDetailedResponse actualJobRole = jobRoleService.getJobRoleById(jobRoleId);
@@ -113,7 +117,7 @@ public class JobRoleServiceTest {
     @Test
     public void getJobRoleById_shouldThrowSqlException_whenDaoThrowsSqlException() throws SQLException{
 
-        Mockito.when(jobRoleDao.getJobRoleById(1)).thenThrow(SQLException.class);
+        when(jobRoleDao.getJobRoleById(1)).thenThrow(SQLException.class);
 
         assertThrows(SQLException.class,
                 () -> jobRoleService.getJobRoleById(1));
@@ -125,13 +129,21 @@ public class JobRoleServiceTest {
 
         int nonExistentJobRoleId = 999;
 
-        Mockito.when(jobRoleDao.getJobRoleById(nonExistentJobRoleId)).thenReturn(null);
+        when(jobRoleDao.getJobRoleById(nonExistentJobRoleId)).thenReturn(null);
 
         assertThrows(DoesNotExistException.class,
                 () -> jobRoleService.getJobRoleById(nonExistentJobRoleId));
 
     }
+    @Test
+    public void getOpenJobRoles_shouldThrowSQLException_whenDaoThrowsSQLExceptionWithOrdering()
+            throws SQLException{
+        when(jobRoleDao.getOpenJobRoles(JobRoleColumn.ROLENAME.getColumnName(), Direction.ASC.getDirectionName())).thenThrow(SQLException.class);
 
+        assertThrows(SQLException.class, () -> {
+            jobRoleDao.getOpenJobRoles(JobRoleColumn.ROLENAME.getColumnName(), Direction.ASC.getDirectionName());
+        });
+    }
     @Test
     public void createJobRole_shouldReturnJobRoleId_whenJobRoleCreatedSuccessfully()
             throws SQLException, InvalidException {

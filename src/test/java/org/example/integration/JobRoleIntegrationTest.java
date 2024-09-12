@@ -16,6 +16,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 import java.sql.Date;
+import javax.ws.rs.core.StreamingOutput;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -59,7 +60,7 @@ public class JobRoleIntegrationTest {
     }
 
     @Test
-    public void getAllJobRoles_shouldReturn401WhenNoTokenProvided() {
+    public void getJobRoles_shouldReturn401WhenNoTokenProvided() {
         Client client = APP.client();
 
         Response response = client.target("http://localhost:8080/api/job-roles")

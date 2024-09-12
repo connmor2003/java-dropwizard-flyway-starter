@@ -34,9 +34,10 @@ public class JobRoleService {
         return jobRoleId;
     }
 
-    public List<JobRoleResponse> getOpenJobRoles() throws SQLException {
+    public List<JobRoleResponse> getOpenJobRoles(
+            final String orderBy, final String direction) throws SQLException {
         return JobRoleMapper.mapJobRolesListToJobRoleResponseList(
-                jobRoleDao.getOpenJobRoles());
+                jobRoleDao.getOpenJobRoles(orderBy, direction));
     }
 
     public JobRoleDetailedResponse getJobRoleById(final int id)
